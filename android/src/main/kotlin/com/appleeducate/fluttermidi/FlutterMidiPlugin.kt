@@ -1,4 +1,4 @@
-package com.appleeducate.fluttermidi;
+package com.appleeducate.fluttermidi
 
 import cn.sherlock.com.sun.media.sound.SF2Soundbank
 import cn.sherlock.com.sun.media.sound.SoftSynthesizer
