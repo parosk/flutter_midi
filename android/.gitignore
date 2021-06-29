@@ -7,5 +7,5 @@
 /build
 /captures
 /.cxx
-/.externalNativeBuild.cmake
+/.externalNativeBuild/cmake
 /.idea
