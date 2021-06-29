@@ -18,6 +18,7 @@ import jp.kshoji.javax.sound.midi.ShortMessage;
 public class FlutterMidiPlugin implements MethodCallHandler {
   private SoftSynthesizer synth;
   private Receiver recv;
+  private NativeLibJNI nativeLibJNI = new NativeLibJNI();
 
   /** Plugin registration. */
   public static void registerWith(Registrar registrar) {
@@ -34,10 +35,16 @@ public class FlutterMidiPlugin implements MethodCallHandler {
         SF2Soundbank sf = new SF2Soundbank(_file);
         synth = new SoftSynthesizer();
         synth.open();
-        synth.loadAllInstruments(sf);
-        synth.getChannels()[0].programChange(0);
-        synth.getChannels()[1].programChange(1);
-        recv = synth.getReceiver();
+//        synth.loadAllInstruments(sf);
+//        synth.getChannels()[0].programChange(0);
+//        synth.getChannels()[1].programChange(1);
+//        recv = synth.getReceiver();
+
+
+        System.loadLibrary("fluidsynth");
+        nativeLibJNI.init(_file.getAbsolutePath());
+
+
       } catch (IOException e) {
         e.printStackTrace();
       } catch (MidiUnavailableException e) {
@@ -54,6 +61,12 @@ public class FlutterMidiPlugin implements MethodCallHandler {
         synth.getChannels()[0].programChange(0);
         synth.getChannels()[1].programChange(1);
         recv = synth.getReceiver();
+
+         nativeLibJNI.programChange(0,0);
+        nativeLibJNI.programChange(1,1);
+
+
+
       } catch (IOException e) {
         e.printStackTrace();
       } catch (MidiUnavailableException e) {
@@ -61,22 +74,18 @@ public class FlutterMidiPlugin implements MethodCallHandler {
       }
     } else if (call.method.equals("play_midi_note")) {
       int _note = call.argument("note");
-      try {
-        ShortMessage msg = new ShortMessage();
-        msg.setMessage(ShortMessage.NOTE_ON, 0, _note, 127);
-        recv.send(msg, -1);
-      } catch (InvalidMidiDataException e) {
-        e.printStackTrace();
-      }
+      ShortMessage msg = new ShortMessage();
+//        msg.setMessage(ShortMessage.NOTE_ON, 0, _note, 127);
+      recv.send(msg, -1);
+
+      nativeLibJNI.noteOn(_note,127);
+
     } else if (call.method.equals("stop_midi_note")) {
       int _note = call.argument("note");
-      try {
-        ShortMessage msg = new ShortMessage();
-        msg.setMessage(ShortMessage.NOTE_OFF, 0, _note, 127);
-        recv.send(msg, -1);
-      } catch (InvalidMidiDataException e) {
-        e.printStackTrace();
-      }
+      ShortMessage msg = new ShortMessage();
+//        msg.setMessage(ShortMessage.NOTE_OFF, 0, _note, 127);
+//        recv.send(msg, -1);
+      nativeLibJNI.noteOff(_note);
     } else {
     }
   }
