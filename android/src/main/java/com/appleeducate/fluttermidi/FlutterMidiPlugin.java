@@ -76,7 +76,7 @@ public class FlutterMidiPlugin implements MethodCallHandler {
       int _note = call.argument("note");
       ShortMessage msg = new ShortMessage();
 //        msg.setMessage(ShortMessage.NOTE_ON, 0, _note, 127);
-      recv.send(msg, -1);
+      //recv.send(msg, -1);
 
       nativeLibJNI.noteOn(_note,127);
 
